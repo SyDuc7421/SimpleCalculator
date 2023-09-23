@@ -3,15 +3,12 @@ package com.example.mycalcultor;
 
 import android.app.Activity;
 import android.content.Context;
-import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
