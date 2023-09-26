@@ -161,58 +161,64 @@ public class MainActivity extends Activity implements View.OnClickListener{
         String numOne="", numTwo="";
         int posOfOperator=inputStringBuilder.indexOf(inputOperator);
         //check the last char is a operator
-        if(String.valueOf(inputStringBuilder.charAt(inputStringBuilder.length() - 1)).equals(inputOperator)){
-            //Toast.makeText((Context) this, "Not Valid input: Last character is a operator",Toast.LENGTH_SHORT).show();
-            openWarmingDialog("Not Valid input: Last character is a operator");
-        }
-        else {
-            numOne = inputStringBuilder.substring(0, posOfOperator);
-            numTwo = inputStringBuilder.substring(posOfOperator + 1, inputStringBuilder.length());
+        try{
+            if(String.valueOf(inputStringBuilder.charAt(inputStringBuilder.length() - 1)).equals(inputOperator)){
+                //Toast.makeText((Context) this, "Not Valid input: Last character is a operator",Toast.LENGTH_SHORT).show();
+                openWarmingDialog("Not Valid input: Last character is a operator.");
+            }
+            else {
+                numOne = inputStringBuilder.substring(0, posOfOperator);
+                numTwo = inputStringBuilder.substring(posOfOperator + 1, inputStringBuilder.length());
 
-            // count number of operators
-            String operators = "+-*/";
-            int operatorCount = 0;
-            for (int i = 0; i < inputStringBuilder.length(); i++) {
-                char currentChar = inputStringBuilder.charAt(i);
-                if (operators.contains(String.valueOf(currentChar))) {
-                    operatorCount++;
+                // count number of operators
+                String operators = "+-*/";
+                int operatorCount = 0;
+                for (int i = 0; i < inputStringBuilder.length(); i++) {
+                    char currentChar = inputStringBuilder.charAt(i);
+                    if (operators.contains(String.valueOf(currentChar))) {
+                        operatorCount++;
+                    }
+                }
+
+                if (Integer.parseInt(numTwo) == 0)
+    //                Toast.makeText((Context) this, "Not Valid input: Can't divide to Zero", Toast.LENGTH_SHORT).show();
+                    openWarmingDialog("Not Valid input: Can't divide to Zero.");
+
+                else if (numOne.isEmpty() || numTwo.isEmpty())
+    //                Toast.makeText((Context) this, "Not Valid input: Number one or number two is empty" , Toast.LENGTH_SHORT).show();
+                    openWarmingDialog("Not Valid input: Number one or number two is empty.");
+
+                else if (inputStringBuilder.indexOf(inputOperator) == 0)
+    //                Toast.makeText((Context) this, "Not Valid input: First character is a operator", Toast.LENGTH_SHORT).show();
+                    openWarmingDialog("Not Valid input: First character is a operator.");
+
+                else if (operatorCount>1)
+    //                Toast.makeText((Context) this, "Not Valid input: Have to many operator",Toast.LENGTH_SHORT).show();
+                    openWarmingDialog("Not Valid input: Have to many operator.");
+                //calculate numbers
+                else switch (inputOperator) {
+                        case "+":
+                            result = Integer.parseInt(numOne) + Integer.parseInt(numTwo);
+                            break;
+
+                        case "-":
+                            result = Integer.parseInt(numOne) - Integer.parseInt(numTwo);
+                            break;
+
+                        case "*":
+                            result = Integer.parseInt(numOne) * Integer.parseInt(numTwo);
+                            break;
+
+                        case "/":
+                            result = Integer.parseInt(numOne) / Integer.parseInt(numTwo);
+                            break;
                 }
             }
-
-            if (Integer.parseInt(numTwo) == 0)
-//                Toast.makeText((Context) this, "Not Valid input: Can't divide to Zero", Toast.LENGTH_SHORT).show();
-                openWarmingDialog("Not Valid input: Can't divide to Zero");
-
-            else if (numOne.isEmpty() || numTwo.isEmpty())
-//                Toast.makeText((Context) this, "Not Valid input: Number one or number two is empty" , Toast.LENGTH_SHORT).show();
-                openWarmingDialog("Not Valid input: Number one or number two is empty");
-
-            else if (inputStringBuilder.indexOf(inputOperator) == 0)
-//                Toast.makeText((Context) this, "Not Valid input: First character is a operator", Toast.LENGTH_SHORT).show();
-                openWarmingDialog("Not Valid input: First character is a operator");
-
-            else if (operatorCount!=1)
-//                Toast.makeText((Context) this, "Not Valid input: Have to many operator",Toast.LENGTH_SHORT).show();
-                openWarmingDialog("Not Valid input: Have to many operator");
-            //calculate numbers
-            else switch (inputOperator) {
-                    case "+":
-                        result = Integer.parseInt(numOne) + Integer.parseInt(numTwo);
-                        break;
-
-                    case "-":
-                        result = Integer.parseInt(numOne) - Integer.parseInt(numTwo);
-                        break;
-
-                    case "*":
-                        result = Integer.parseInt(numOne) * Integer.parseInt(numTwo);
-                        break;
-
-                    case "/":
-                        result = Integer.parseInt(numOne) / Integer.parseInt(numTwo);
-                        break;
-            }
         }
+        catch (Exception exception){
+            openWarmingDialog("Not Valid input: Only calculating between 2 numbers.");
+        }
+
         inputStringBuilder.setLength(0);
         inputOperator=null;
         return result;
