@@ -2,12 +2,16 @@ package com.example.mycalcultor;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+
 
 
 public class MainActivity extends Activity implements View.OnClickListener{
@@ -21,6 +25,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private StringBuilder inputStringBuilder;
     private String inputOperator;
     private boolean isReturnResult=false;
+    private boolean isResultValidated =true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +74,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         btnDivide.setOnClickListener(this);
         btnClear.setOnClickListener(this);
         btnEqual.setOnClickListener(this);
+
+
 
 
     }
@@ -130,8 +137,15 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.btnEqual:
                 if(inputStringBuilder.length()!=0 && inputOperator != null){
                     int result=evaluateExpression();
-                    edtResult.setText(String.valueOf(result));
-                    isReturnResult=true;
+                    isReturnResult = true;
+                    if(isResultValidated) {
+                        edtResult.setText(String.valueOf(result));
+                    }
+                    else{
+                        //Toast.makeText((Context) this, "NaN",Toast.LENGTH_SHORT).show();
+                        edtResult.setText("NaN");
+                        isResultValidated =true;
+                    }
                 }
                 break;
         }
@@ -148,7 +162,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         int posOfOperator=inputStringBuilder.indexOf(inputOperator);
         //check the last char is a operator
         if(String.valueOf(inputStringBuilder.charAt(inputStringBuilder.length() - 1)).equals(inputOperator)){
-            Toast.makeText((Context) this, "Not Valid input: Last character is a operator",Toast.LENGTH_SHORT).show();
+            //Toast.makeText((Context) this, "Not Valid input: Last character is a operator",Toast.LENGTH_SHORT).show();
+            openWarmingDialog("Not Valid input: Last character is a operator");
         }
         else {
             numOne = inputStringBuilder.substring(0, posOfOperator);
@@ -165,13 +180,20 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
 
             if (Integer.parseInt(numTwo) == 0)
-                Toast.makeText((Context) this, "Not Valid input: Can't divide to Zero", Toast.LENGTH_SHORT).show();
+//                Toast.makeText((Context) this, "Not Valid input: Can't divide to Zero", Toast.LENGTH_SHORT).show();
+                openWarmingDialog("Not Valid input: Can't divide to Zero");
+
             else if (numOne.isEmpty() || numTwo.isEmpty())
-                Toast.makeText((Context) this, "Not Valid input: Number one or number two is empty" , Toast.LENGTH_SHORT).show();
+//                Toast.makeText((Context) this, "Not Valid input: Number one or number two is empty" , Toast.LENGTH_SHORT).show();
+                openWarmingDialog("Not Valid input: Number one or number two is empty");
+
             else if (inputStringBuilder.indexOf(inputOperator) == 0)
-                Toast.makeText((Context) this, "Not Valid input: First character is a operator", Toast.LENGTH_SHORT).show();
+//                Toast.makeText((Context) this, "Not Valid input: First character is a operator", Toast.LENGTH_SHORT).show();
+                openWarmingDialog("Not Valid input: First character is a operator");
+
             else if (operatorCount!=1)
-                Toast.makeText((Context) this, "Not Valid input: Have to many operator",Toast.LENGTH_SHORT).show();
+//                Toast.makeText((Context) this, "Not Valid input: Have to many operator",Toast.LENGTH_SHORT).show();
+                openWarmingDialog("Not Valid input: Have to many operator");
             //calculate numbers
             else switch (inputOperator) {
                     case "+":
@@ -194,6 +216,20 @@ public class MainActivity extends Activity implements View.OnClickListener{
         inputStringBuilder.setLength(0);
         inputOperator=null;
         return result;
+    }
+
+    private void openWarmingDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Warming Alert")
+                .setMessage(message)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        builder.show();
+        isResultValidated =false;
     }
 
 }
